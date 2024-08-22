@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "927606565255",
+    "project_id": "flutter-work-ac3b1",
+    "storage_bucket": "flutter-work-ac3b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927606565255:android:6961be7d43d87eb5cf0b22",
+        "android_client_info": {
+          "package_name": "com.example.car_rental"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlOf8kzbNTjW7Prp7pXzjtIjZ9YkhVh6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
