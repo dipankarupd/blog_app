@@ -7,15 +7,17 @@ abstract class AuthActionState extends AuthState {}
 
 final class AuthInitial extends AuthState {}
 
+// build a circular indicator for loading
 class AuthLoadingState extends AuthState {}
 
 class AuthLoadingSuccessState extends AuthState {
-  final String userId;
+  final Profile profile;
 
-  AuthLoadingSuccessState({required this.userId});
+  AuthLoadingSuccessState({required this.profile});
 }
 
-class AuthFailedState extends AuthState {
+// show snackbar message
+class AuthFailedState extends AuthActionState {
   final String message;
 
   AuthFailedState({required this.message});

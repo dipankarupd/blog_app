@@ -1,8 +1,12 @@
 import 'package:car_rental/config/app_route.dart';
+import 'package:car_rental/cores/common/widgets/loader.dart';
+import 'package:car_rental/cores/utils/show_snackbar.dart';
+import 'package:car_rental/features/auth/presenatation/bloc/auth_bloc.dart';
 import 'package:car_rental/features/auth/presenatation/widgets/auth_button.dart';
 import 'package:car_rental/features/auth/presenatation/widgets/auth_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -16,6 +20,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     usernameController.dispose();
@@ -23,8 +29,6 @@ class _SignUpPageState extends State<SignUpPage> {
     passwordController.dispose();
     super.dispose();
   }
-
-  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,87 +38,227 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8),
-        child: Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 140,
-                ),
-                const Text(
-                  'My Blog App\nWelcome Aboard!!',
-                  style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 131, 96, 226)),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                const Text(
-                  'Sign up to register',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                Center(
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listenWhen: (previous, current) => current is AuthActionState,
+          buildWhen: (previous, current) => current is! AuthActionState,
+          listener: (context, state) {
+            if (state is AuthFailedState) {
+              print(state.message);
+              return showSnackbar(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            switch (state.runtimeType) {
+              case AuthLoadingState:
+                return Loader();
+              case AuthLoadingSuccessState:
+                return Form(
+                  key: formKey,
+                  child: SingleChildScrollView(
                     child: Column(
-                  children: [
-                    AuthField(
-                      hintText: 'hint: johndoe123',
-                      placeholder: 'Enter the Username',
-                      controller: usernameController,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 140,
+                        ),
+                        const Text(
+                          'My Blog App\nWelcome Aboard!!',
+                          style: TextStyle(
+                              fontSize: 42,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 131, 96, 226)),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        const Text(
+                          'Sign up to register',
+                          style: TextStyle(
+                              fontSize: 32, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Center(
+                            child: Column(
+                          children: [
+                            AuthField(
+                              hintText: 'hint: johndoe123',
+                              placeholder: 'Enter the Username',
+                              controller: usernameController,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            AuthField(
+                              hintText: 'hint: johndoe@gmail.com',
+                              placeholder: 'Enter the Email',
+                              controller: emailController,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            AuthField(
+                              placeholder: 'Enter the Password',
+                              isObscure: true,
+                              controller: passwordController,
+                            ),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            AuthGradinetButton(
+                              buttonText: 'Sign Up',
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  print('printing ' +
+                                      usernameController.text.trim() +
+                                      ' ' +
+                                      emailController.text.trim() +
+                                      ' ' +
+                                      passwordController.text.trim());
+                                  context.read<AuthBloc>().add(
+                                        AuthSignUpEvent(
+                                          username:
+                                              usernameController.text.trim(),
+                                          email: emailController.text.trim(),
+                                          password:
+                                              passwordController.text.trim(),
+                                        ),
+                                      );
+                                }
+                              },
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(AppRoute.initial),
+                              child: RichText(
+                                text: TextSpan(
+                                    text: 'Already have an account? ',
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                    children: const [
+                                      TextSpan(
+                                          text: 'Sign In',
+                                          style: TextStyle(
+                                              color: Colors.deepPurpleAccent,
+                                              fontWeight: FontWeight.bold))
+                                    ]),
+                              ),
+                            )
+                          ],
+                        ))
+                      ],
                     ),
-                    const SizedBox(
-                      height: 20,
+                  ),
+                );
+              default:
+                return Form(
+                  key: formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 140,
+                        ),
+                        const Text(
+                          'My Blog App\nWelcome Aboard!!',
+                          style: TextStyle(
+                              fontSize: 42,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 131, 96, 226)),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        const Text(
+                          'Sign up to register',
+                          style: TextStyle(
+                              fontSize: 32, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Center(
+                            child: Column(
+                          children: [
+                            AuthField(
+                              hintText: 'hint: johndoe123',
+                              placeholder: 'Enter the Username',
+                              controller: usernameController,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            AuthField(
+                              hintText: 'hint: johndoe@gmail.com',
+                              placeholder: 'Enter the Email',
+                              controller: emailController,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            AuthField(
+                              placeholder: 'Enter the Password',
+                              isObscure: true,
+                              controller: passwordController,
+                            ),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            AuthGradinetButton(
+                              buttonText: 'Sign Up',
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  print('printing ' +
+                                      usernameController.text.trim() +
+                                      ' ' +
+                                      emailController.text.trim() +
+                                      ' ' +
+                                      passwordController.text.trim());
+                                  context.read<AuthBloc>().add(
+                                        AuthSignUpEvent(
+                                          username:
+                                              usernameController.text.trim(),
+                                          email: emailController.text.trim(),
+                                          password:
+                                              passwordController.text.trim(),
+                                        ),
+                                      );
+                                }
+                              },
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(AppRoute.initial),
+                              child: RichText(
+                                text: TextSpan(
+                                    text: 'Already have an account? ',
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                    children: const [
+                                      TextSpan(
+                                          text: 'Sign In',
+                                          style: TextStyle(
+                                              color: Colors.deepPurpleAccent,
+                                              fontWeight: FontWeight.bold))
+                                    ]),
+                              ),
+                            )
+                          ],
+                        ))
+                      ],
                     ),
-                    AuthField(
-                      hintText: 'hint: johndoe@gmail.com',
-                      placeholder: 'Enter the Email',
-                      controller: emailController,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    AuthField(
-                      placeholder: 'Enter the Password',
-                      isObscure: true,
-                      controller: passwordController,
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    AuthGradinetButton(
-                      buttonText: 'Sign Up',
-                      onPressed: () {},
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    GestureDetector(
-                      onTap: () =>
-                          Navigator.of(context).pushNamed(AppRoute.initial),
-                      child: RichText(
-                        text: TextSpan(
-                            text: 'Already have an account? ',
-                            style: Theme.of(context).textTheme.titleMedium,
-                            children: const [
-                              TextSpan(
-                                  text: 'Sign In',
-                                  style: TextStyle(
-                                      color: Colors.deepPurpleAccent,
-                                      fontWeight: FontWeight.bold))
-                            ]),
-                      ),
-                    )
-                  ],
-                ))
-              ],
-            ),
-          ),
+                  ),
+                );
+            }
+          },
         ),
       ),
     );

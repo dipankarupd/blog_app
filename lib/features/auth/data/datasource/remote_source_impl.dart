@@ -1,5 +1,6 @@
 import 'package:car_rental/cores/exceptions/custom_exception.dart';
 import 'package:car_rental/features/auth/data/datasource/remote_source.dart';
+import 'package:car_rental/features/auth/data/model/user_profile_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthRemoteSourceImpl implements AuthRemoteSource {
@@ -8,7 +9,7 @@ class AuthRemoteSourceImpl implements AuthRemoteSource {
   AuthRemoteSourceImpl({required this.supabaseClient});
 
   @override
-  Future<String> signupWithEmailAndPassword({
+  Future<ProfileModel> signupWithEmailAndPassword({
     required String username,
     required String email,
     required String password,
@@ -20,7 +21,7 @@ class AuthRemoteSourceImpl implements AuthRemoteSource {
       if (response.user == null) {
         throw ServerException(message: 'User is null');
       }
-      return response.user!.id;
+      return ProfileModel.fromJson(response.user!.toJson());
     } catch (e) {
       throw ServerException(message: e.toString());
     }
