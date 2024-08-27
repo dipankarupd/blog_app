@@ -3,6 +3,8 @@ import 'package:car_rental/features/auth/data/datasource/remote_source.dart';
 import 'package:car_rental/features/auth/data/datasource/remote_source_impl.dart';
 import 'package:car_rental/features/auth/data/repository/auth_repo_impl.dart';
 import 'package:car_rental/features/auth/domain/repository/auth_repository.dart';
+import 'package:car_rental/features/auth/domain/usecases/current_user.dart';
+import 'package:car_rental/features/auth/domain/usecases/sign_in.dart';
 import 'package:car_rental/features/auth/domain/usecases/sign_up.dart';
 import 'package:car_rental/features/auth/presenatation/bloc/auth_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -30,27 +32,33 @@ Future<void> initDependancies() async {
 void _initAuth() {
   // create dependancy for AuthRemoteSourceImpl
   // here I need new instance everytime it is being called
-  serviceLoactor.registerFactory<AuthRemoteSource>(
-    () => AuthRemoteSourceImpl(
-      supabaseClient: serviceLoactor(),
-    ),
-  );
-
-  serviceLoactor.registerFactory<AuthRepository>(
-    () => AuthRepoImpl(
-      source: serviceLoactor(),
-    ),
-  );
-
-  serviceLoactor.registerFactory<SignUp>(
-    () => SignUp(
-      authRepository: serviceLoactor(),
-    ),
-  );
-
-  serviceLoactor.registerLazySingleton(
-    () => AuthBloc(
-      signup: serviceLoactor(),
-    ),
-  );
+  serviceLoactor
+    ..registerFactory<AuthRemoteSource>(
+      () => AuthRemoteSourceImpl(
+        supabaseClient: serviceLoactor(),
+      ),
+    )
+    ..registerFactory<AuthRepository>(
+      () => AuthRepoImpl(
+        source: serviceLoactor(),
+      ),
+    )
+    ..registerFactory<SignUp>(
+      () => SignUp(
+        authRepository: serviceLoactor(),
+      ),
+    )
+    ..registerFactory<SignIn>(
+      () => SignIn(authRepository: serviceLoactor()),
+    )
+    ..registerFactory<CurrentUser>(
+      () => CurrentUser(authRepository: serviceLoactor()),
+    )
+    ..registerLazySingleton(
+      () => AuthBloc(
+        signup: serviceLoactor(),
+        signin: serviceLoactor(),
+        currentUser: serviceLoactor(),
+      ),
+    );
 }

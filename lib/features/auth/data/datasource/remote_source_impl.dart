@@ -9,6 +9,9 @@ class AuthRemoteSourceImpl implements AuthRemoteSource {
   AuthRemoteSourceImpl({required this.supabaseClient});
 
   @override
+  Session? get currentUserSession => supabaseClient.auth.currentSession;
+
+  @override
   Future<ProfileModel> signupWithEmailAndPassword({
     required String username,
     required String email,
@@ -28,9 +31,44 @@ class AuthRemoteSourceImpl implements AuthRemoteSource {
   }
 
   @override
-  Future<String> signinWithEmailAndPassword(
-      {required String email, required String password}) {
-    // TODO: implement signinWithEmailAndPassword
-    throw UnimplementedError();
+  Future<ProfileModel> signinWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await supabaseClient.auth.signInWithPassword(
+        password: password,
+        email: email,
+      );
+
+      if (response.user == null) {
+        throw ServerException(message: 'User is null');
+      }
+      return ProfileModel.fromJson(response.user!.toJson());
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<ProfileModel?> getCurrentUser() async {
+    try {
+      if (currentUserSession != null) {
+        // user data is the list of maps but the list contain only one element
+        // as on filtering only one element is present
+        final userData = await supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('id', currentUserSession!.user.id);
+
+        // as userdata list has only one element, we are returning that
+        // userdata ==> [{...}]
+        return ProfileModel.fromJson(userData.first)
+            .copyWith(email: currentUserSession!.user.email);
+      }
+      return null;
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
   }
 }

@@ -10,10 +10,41 @@ class AuthRepoImpl implements AuthRepository {
 
   AuthRepoImpl({required this.source});
   @override
-  Future<Either<Failure, Profile>> signinWithEmailAndPassword(
-      {required String email, required String password}) {
-    // TODO: implement signinWithEmailAndPassword
-    throw UnimplementedError();
+  Future<Either<Failure, Profile>> signinWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final userProfile = await source.signinWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      return right(userProfile);
+    } on ServerException catch (e) {
+      return left(Failure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Profile>> currentUser() async {
+    try {
+      final user = await source.getCurrentUser();
+
+      // if we get a null user, show a failure with message
+      // user is not logged in
+      if (user == null) {
+        return left(
+          Failure(message: 'User not logged in'),
+        );
+      }
+
+      return right(user);
+    } on ServerException catch (e) {
+      return left(
+        Failure(message: e.message),
+      );
+    }
   }
 
   @override

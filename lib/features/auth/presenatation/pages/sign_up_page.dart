@@ -43,221 +43,106 @@ class _SignUpPageState extends State<SignUpPage> {
           buildWhen: (previous, current) => current is! AuthActionState,
           listener: (context, state) {
             if (state is AuthFailedState) {
-              print(state.message);
               return showSnackbar(context, state.message);
             }
           },
           builder: (context, state) {
-            switch (state.runtimeType) {
-              case AuthLoadingState:
-                return Loader();
-              case AuthLoadingSuccessState:
-                return Form(
-                  key: formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 140,
-                        ),
-                        const Text(
-                          'My Blog App\nWelcome Aboard!!',
-                          style: TextStyle(
-                              fontSize: 42,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 131, 96, 226)),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        const Text(
-                          'Sign up to register',
-                          style: TextStyle(
-                              fontSize: 32, fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Center(
-                            child: Column(
-                          children: [
-                            AuthField(
-                              hintText: 'hint: johndoe123',
-                              placeholder: 'Enter the Username',
-                              controller: usernameController,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            AuthField(
-                              hintText: 'hint: johndoe@gmail.com',
-                              placeholder: 'Enter the Email',
-                              controller: emailController,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            AuthField(
-                              placeholder: 'Enter the Password',
-                              isObscure: true,
-                              controller: passwordController,
-                            ),
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            AuthGradinetButton(
-                              buttonText: 'Sign Up',
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  print('printing ' +
-                                      usernameController.text.trim() +
-                                      ' ' +
-                                      emailController.text.trim() +
-                                      ' ' +
-                                      passwordController.text.trim());
-                                  context.read<AuthBloc>().add(
-                                        AuthSignUpEvent(
-                                          username:
-                                              usernameController.text.trim(),
-                                          email: emailController.text.trim(),
-                                          password:
-                                              passwordController.text.trim(),
-                                        ),
-                                      );
-                                }
-                              },
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            GestureDetector(
-                              onTap: () => Navigator.of(context)
-                                  .pushNamed(AppRoute.initial),
-                              child: RichText(
-                                text: TextSpan(
-                                    text: 'Already have an account? ',
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                    children: const [
-                                      TextSpan(
-                                          text: 'Sign In',
-                                          style: TextStyle(
-                                              color: Colors.deepPurpleAccent,
-                                              fontWeight: FontWeight.bold))
-                                    ]),
-                              ),
-                            )
-                          ],
-                        ))
-                      ],
-                    ),
-                  ),
-                );
-              default:
-                return Form(
-                  key: formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 140,
-                        ),
-                        const Text(
-                          'My Blog App\nWelcome Aboard!!',
-                          style: TextStyle(
-                              fontSize: 42,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 131, 96, 226)),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        const Text(
-                          'Sign up to register',
-                          style: TextStyle(
-                              fontSize: 32, fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Center(
-                            child: Column(
-                          children: [
-                            AuthField(
-                              hintText: 'hint: johndoe123',
-                              placeholder: 'Enter the Username',
-                              controller: usernameController,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            AuthField(
-                              hintText: 'hint: johndoe@gmail.com',
-                              placeholder: 'Enter the Email',
-                              controller: emailController,
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            AuthField(
-                              placeholder: 'Enter the Password',
-                              isObscure: true,
-                              controller: passwordController,
-                            ),
-                            const SizedBox(
-                              height: 40,
-                            ),
-                            AuthGradinetButton(
-                              buttonText: 'Sign Up',
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  print('printing ' +
-                                      usernameController.text.trim() +
-                                      ' ' +
-                                      emailController.text.trim() +
-                                      ' ' +
-                                      passwordController.text.trim());
-                                  context.read<AuthBloc>().add(
-                                        AuthSignUpEvent(
-                                          username:
-                                              usernameController.text.trim(),
-                                          email: emailController.text.trim(),
-                                          password:
-                                              passwordController.text.trim(),
-                                        ),
-                                      );
-                                }
-                              },
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            GestureDetector(
-                              onTap: () => Navigator.of(context)
-                                  .pushNamed(AppRoute.initial),
-                              child: RichText(
-                                text: TextSpan(
-                                    text: 'Already have an account? ',
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                    children: const [
-                                      TextSpan(
-                                          text: 'Sign In',
-                                          style: TextStyle(
-                                              color: Colors.deepPurpleAccent,
-                                              fontWeight: FontWeight.bold))
-                                    ]),
-                              ),
-                            )
-                          ],
-                        ))
-                      ],
-                    ),
-                  ),
-                );
+            if (state is AuthLoadingState) {
+              return const Loader();
             }
+            return Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 140,
+                    ),
+                    const Text(
+                      'My Blog App\nWelcome Aboard!!',
+                      style: TextStyle(
+                          fontSize: 42,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 131, 96, 226)),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    const Text(
+                      'Sign up to register',
+                      style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Center(
+                        child: Column(
+                      children: [
+                        AuthField(
+                          hintText: 'hint: johndoe123',
+                          placeholder: 'Enter the Username',
+                          controller: usernameController,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        AuthField(
+                          hintText: 'hint: johndoe@gmail.com',
+                          placeholder: 'Enter the Email',
+                          controller: emailController,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        AuthField(
+                          placeholder: 'Enter the Password',
+                          isObscure: true,
+                          controller: passwordController,
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        AuthGradinetButton(
+                          buttonText: 'Sign Up',
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              context.read<AuthBloc>().add(
+                                    AuthSignUpEvent(
+                                      username: usernameController.text.trim(),
+                                      email: emailController.text.trim(),
+                                      password: passwordController.text.trim(),
+                                    ),
+                                  );
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        GestureDetector(
+                          onTap: () =>
+                              Navigator.of(context).pushNamed(AppRoute.initial),
+                          child: RichText(
+                            text: TextSpan(
+                                text: 'Already have an account? ',
+                                style: Theme.of(context).textTheme.titleMedium,
+                                children: const [
+                                  TextSpan(
+                                      text: 'Sign In',
+                                      style: TextStyle(
+                                          color: Colors.deepPurpleAccent,
+                                          fontWeight: FontWeight.bold))
+                                ]),
+                          ),
+                        )
+                      ],
+                    ))
+                  ],
+                ),
+              ),
+            );
           },
         ),
       ),
