@@ -1,7 +1,8 @@
 import 'dart:async';
 
+import 'package:car_rental/cores/cubits/app_user/app_user_cubit.dart';
 import 'package:car_rental/cores/usecase/usecase.dart';
-import 'package:car_rental/features/auth/domain/entity/user_profile.dart';
+import 'package:car_rental/cores/entity/user_profile.dart';
 import 'package:car_rental/features/auth/domain/usecases/current_user.dart';
 import 'package:car_rental/features/auth/domain/usecases/sign_in.dart';
 import 'package:car_rental/features/auth/domain/usecases/sign_up.dart';
@@ -15,14 +16,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUp _signUp;
   final SignIn _signIn;
   final CurrentUser _currentUser;
+  final AppUserCubit _appUserCubit;
   AuthBloc({
     required SignUp signup,
     required SignIn signin,
     required CurrentUser currentUser,
+    required AppUserCubit appUserCubit,
   })  : _signUp = signup,
         _signIn = signin,
         _currentUser = currentUser,
+        _appUserCubit = appUserCubit,
         super(AuthInitial()) {
+    // for all auth event, emit an auth loading state
+    on<AuthEvent>((_, emit) => emit(AuthLoadingState()));
     on<AuthSignUpEvent>(authSignUpEvent);
     on<AuthSignInEvent>(authSignInEvent);
     on<AuthCheckUserLoginStatusEvent>(authCheckUserLoginStatusEvent);
@@ -44,9 +50,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthFailedState(message: l.message));
         emit(AuthLoadingState());
       },
-      (r) => emit(
-        AuthLoadingSuccessState(profile: r),
-      ),
+      (r) => _emitAuthSuccess(r, emit),
     );
   }
 
@@ -65,9 +69,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthFailedState(message: l.message));
         emit(AuthLoadingState());
       },
-      (r) => emit(
-        AuthLoadingSuccessState(profile: r),
-      ),
+      (r) => _emitAuthSuccess(r, emit),
     );
   }
 
@@ -75,12 +77,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthCheckUserLoginStatusEvent event, Emitter<AuthState> emit) async {
     final res = await _currentUser.call(NoParams());
 
-    res.fold(
-      (l) => emit(AuthFailedState(message: l.message)),
-      (r) {
-        print(r.email);
-        emit(AuthLoadingSuccessState(profile: r));
-      },
-    );
+    res.fold((l) => emit(AuthFailedState(message: l.message)),
+        (r) => _emitAuthSuccess(r, emit));
+  }
+
+  // this updates the user information using the cubit
+  void _emitAuthSuccess(Profile profile, Emitter<AuthState> emit) {
+    _appUserCubit.updateUser(profile);
+    emit(AuthSuccessState(profile: profile));
   }
 }

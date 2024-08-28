@@ -9,3 +9,8 @@ class Profile {
     required this.username,
   });
 }
+
+
+// added in core
+// core does not depend on features
+// features can depend on core

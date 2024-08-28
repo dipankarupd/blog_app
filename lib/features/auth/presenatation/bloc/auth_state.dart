@@ -10,10 +10,10 @@ final class AuthInitial extends AuthState {}
 // build a circular indicator for loading
 class AuthLoadingState extends AuthState {}
 
-class AuthLoadingSuccessState extends AuthState {
+class AuthSuccessState extends AuthState {
   final Profile profile;
 
-  AuthLoadingSuccessState({required this.profile});
+  AuthSuccessState({required this.profile});
 }
 
 // show snackbar message

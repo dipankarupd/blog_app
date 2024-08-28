@@ -1,4 +1,4 @@
-import 'package:car_rental/features/auth/domain/entity/user_profile.dart';
+import 'package:car_rental/cores/entity/user_profile.dart';
 
 class ProfileModel extends Profile {
   ProfileModel({

@@ -1,3 +1,4 @@
+import 'package:car_rental/cores/cubits/app_user/app_user_cubit.dart';
 import 'package:car_rental/cores/secrets/supabase_secrets.dart';
 import 'package:car_rental/features/auth/data/datasource/remote_source.dart';
 import 'package:car_rental/features/auth/data/datasource/remote_source_impl.dart';
@@ -55,10 +56,14 @@ void _initAuth() {
       () => CurrentUser(authRepository: serviceLoactor()),
     )
     ..registerLazySingleton(
+      () => AppUserCubit(),
+    )
+    ..registerLazySingleton(
       () => AuthBloc(
         signup: serviceLoactor(),
         signin: serviceLoactor(),
         currentUser: serviceLoactor(),
+        appUserCubit: serviceLoactor(),
       ),
     );
 }

@@ -1,7 +1,7 @@
 import 'package:car_rental/cores/exceptions/custom_exception.dart';
 import 'package:car_rental/cores/utils/error.dart';
 import 'package:car_rental/features/auth/data/datasource/remote_source.dart';
-import 'package:car_rental/features/auth/domain/entity/user_profile.dart';
+import 'package:car_rental/cores/entity/user_profile.dart';
 import 'package:car_rental/features/auth/domain/repository/auth_repository.dart';
 import 'package:fpdart/src/either.dart';
 

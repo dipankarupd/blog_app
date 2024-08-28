@@ -1,4 +1,6 @@
 class AppRoute {
-  static String initial = '/';
-  static String signup = '/signup';
+  static String signin = '/auth/signin';
+  static String signup = '/auth/signup';
+
+  static String blog = '/blog';
 }

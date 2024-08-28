@@ -123,7 +123,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                         GestureDetector(
                           onTap: () =>
-                              Navigator.of(context).pushNamed(AppRoute.initial),
+                              Navigator.of(context).pushNamed(AppRoute.signin),
                           child: RichText(
                             text: TextSpan(
                                 text: 'Already have an account? ',
