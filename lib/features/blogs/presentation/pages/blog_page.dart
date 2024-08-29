@@ -1,3 +1,5 @@
+import 'package:car_rental/config/app_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BlogPage extends StatelessWidget {
@@ -6,8 +8,16 @@ class BlogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text('home page'),
+      appBar: AppBar(
+        title: const Text('Blog Home'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoute.uploadBlog);
+            },
+            icon: const Icon(CupertinoIcons.add_circled),
+          )
+        ],
       ),
     );
   }

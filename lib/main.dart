@@ -5,6 +5,8 @@ import 'package:car_rental/cores/theme/theme.dart';
 import 'package:car_rental/features/auth/presenatation/bloc/auth_bloc.dart';
 import 'package:car_rental/features/auth/presenatation/pages/sign_in_page.dart';
 import 'package:car_rental/features/auth/presenatation/pages/sign_up_page.dart';
+import 'package:car_rental/features/blogs/presentation/bloc/blog_bloc.dart';
+import 'package:car_rental/features/blogs/presentation/pages/add_new_blog_page.dart';
 import 'package:car_rental/features/blogs/presentation/pages/blog_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +23,9 @@ void main() async {
       ),
       BlocProvider(
         create: (_) => serviceLoactor<AuthBloc>(),
+      ),
+      BlocProvider(
+        create: (_) => serviceLoactor<BlogBloc>(),
       ),
     ],
     child: const MyApp(),
@@ -67,6 +72,7 @@ class _MyAppState extends State<MyApp> {
         AppRoute.signup: (context) => const SignUpPage(),
         AppRoute.signin: (context) => const SignInPage(),
         AppRoute.blog: (context) => const BlogPage(),
+        AppRoute.uploadBlog: (context) => const AddNewBlogPage(),
       },
     );
   }

@@ -8,26 +8,29 @@ import 'package:car_rental/features/auth/domain/usecases/current_user.dart';
 import 'package:car_rental/features/auth/domain/usecases/sign_in.dart';
 import 'package:car_rental/features/auth/domain/usecases/sign_up.dart';
 import 'package:car_rental/features/auth/presenatation/bloc/auth_bloc.dart';
+import 'package:car_rental/features/blogs/data/datasource/blog_remote_data_source.dart';
+import 'package:car_rental/features/blogs/data/datasource/blog_remote_data_source_impl.dart';
+import 'package:car_rental/features/blogs/data/repository/blog_repo_impl.dart';
+import 'package:car_rental/features/blogs/domain/repository/blog_repository.dart';
+import 'package:car_rental/features/blogs/domain/usecases/upload_blog_usecase.dart';
+import 'package:car_rental/features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final serviceLoactor = GetIt.instance;
 
 Future<void> initDependancies() async {
-  _initAuth();
   final supabase = await Supabase.initialize(
     url: AppSecrets.supabase_url,
     anonKey: AppSecrets.supabase_apon,
   );
 
-  // one way to register:
-  // novice way
-  // will create new object of the instance everytime it is called
-  // serviceLoactor.registerFactory(() => null);
-
-  // only single instance of the service is created
-  // provides instance of the supabase client
+  // Register Supabase client first
   serviceLoactor.registerLazySingleton(() => supabase.client);
+
+  // Initialize other dependencies
+  _initAuth();
+  _initBlog();
 }
 
 void _initAuth() {
@@ -65,5 +68,21 @@ void _initAuth() {
         currentUser: serviceLoactor(),
         appUserCubit: serviceLoactor(),
       ),
+    );
+}
+
+void _initBlog() {
+  serviceLoactor
+    ..registerFactory<BlogRemoteDataSource>(
+      () => BlogRemoteDataSourceImpl(supabaseClient: serviceLoactor()),
+    )
+    ..registerFactory<BlogRepository>(
+      () => BlogRepositoryImpl(dataSource: serviceLoactor()),
+    )
+    ..registerFactory<UploadBlogUsecase>(
+      () => UploadBlogUsecase(repository: serviceLoactor()),
+    )
+    ..registerLazySingleton(
+      () => BlogBloc(serviceLoactor()),
     );
 }
