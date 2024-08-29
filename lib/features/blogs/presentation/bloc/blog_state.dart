@@ -16,3 +16,9 @@ final class BlogLoadingFailureState extends BlogActionState {
 
   BlogLoadingFailureState({required this.message});
 }
+
+class BlogListState extends BlogState {
+  final List<Blog> blogs;
+
+  BlogListState({required this.blogs});
+}

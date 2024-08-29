@@ -12,6 +12,7 @@ import 'package:car_rental/features/blogs/data/datasource/blog_remote_data_sourc
 import 'package:car_rental/features/blogs/data/datasource/blog_remote_data_source_impl.dart';
 import 'package:car_rental/features/blogs/data/repository/blog_repo_impl.dart';
 import 'package:car_rental/features/blogs/domain/repository/blog_repository.dart';
+import 'package:car_rental/features/blogs/domain/usecases/get_all_blogs.dart';
 import 'package:car_rental/features/blogs/domain/usecases/upload_blog_usecase.dart';
 import 'package:car_rental/features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -82,7 +83,13 @@ void _initBlog() {
     ..registerFactory<UploadBlogUsecase>(
       () => UploadBlogUsecase(repository: serviceLoactor()),
     )
+    ..registerFactory<GetAllBlogs>(
+      () => serviceLoactor(),
+    )
     ..registerLazySingleton(
-      () => BlogBloc(serviceLoactor()),
+      () => BlogBloc(
+        serviceLoactor(),
+        serviceLoactor(),
+      ),
     );
 }
