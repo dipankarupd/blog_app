@@ -32,8 +32,11 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
       // upload method takes 2 params -> path and image file
       // path is the path in the supabase storage where I want to put
       // so I will upload the image always in a new place and name it blog.id for each post
-      await supabaseClient.storage.from('blog_images').upload(blog.id, image);
-      return supabaseClient.storage.from('blog_images').getPublicUrl(blog.id);
+
+      final path = 'uploads/${blog.id}';
+      await supabaseClient.storage.from('blog_images').upload(path, image);
+      final url = supabaseClient.storage.from('blog_images').getPublicUrl(path);
+      return url;
     } catch (e) {
       throw ServerException(message: e.toString());
     }

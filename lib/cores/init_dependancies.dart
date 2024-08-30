@@ -80,11 +80,13 @@ void _initBlog() {
     ..registerFactory<BlogRepository>(
       () => BlogRepositoryImpl(dataSource: serviceLoactor()),
     )
-    ..registerFactory<UploadBlogUsecase>(
+    ..registerFactory(
       () => UploadBlogUsecase(repository: serviceLoactor()),
     )
-    ..registerFactory<GetAllBlogs>(
-      () => serviceLoactor(),
+    ..registerFactory(
+      () => GetAllBlogs(
+        blogRepository: serviceLoactor(),
+      ),
     )
     ..registerLazySingleton(
       () => BlogBloc(

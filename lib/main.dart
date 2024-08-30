@@ -8,6 +8,7 @@ import 'package:car_rental/features/auth/presenatation/pages/sign_up_page.dart';
 import 'package:car_rental/features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:car_rental/features/blogs/presentation/pages/add_new_blog_page.dart';
 import 'package:car_rental/features/blogs/presentation/pages/blog_page.dart';
+import 'package:car_rental/features/blogs/presentation/pages/blog_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -73,6 +74,7 @@ class _MyAppState extends State<MyApp> {
         AppRoute.signin: (context) => const SignInPage(),
         AppRoute.blog: (context) => const BlogPage(),
         AppRoute.uploadBlog: (context) => const AddNewBlogPage(),
+        AppRoute.viewBlog: (context) => const BlogViewPage()
       },
     );
   }

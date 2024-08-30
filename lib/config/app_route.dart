@@ -4,4 +4,5 @@ class AppRoute {
 
   static String blog = '/blog/home';
   static String uploadBlog = '/blog/upload';
+  static String viewBlog = '/blog/view';
 }
