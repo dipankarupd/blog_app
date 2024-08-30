@@ -53,6 +53,7 @@ class AuthRemoteSourceImpl implements AuthRemoteSource {
   @override
   Future<ProfileModel?> getCurrentUser() async {
     try {
+      print(currentUserSession);
       if (currentUserSession != null) {
         // user data is the list of maps but the list contain only one element
         // as on filtering only one element is present
@@ -67,6 +68,15 @@ class AuthRemoteSourceImpl implements AuthRemoteSource {
             .copyWith(email: currentUserSession!.user.email);
       }
       return null;
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
+  @override
+  Future<void> signout() async {
+    try {
+      await supabaseClient.auth.signOut();
     } catch (e) {
       throw ServerException(message: e.toString());
     }

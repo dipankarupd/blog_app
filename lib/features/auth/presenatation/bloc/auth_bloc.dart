@@ -48,7 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     resp.fold(
       (l) {
         emit(AuthFailedState(message: l.message));
-        emit(AuthLoadingState());
+        // emit(AuthLoadingState());
       },
       (r) => _emitAuthSuccess(r, emit),
     );
@@ -56,8 +56,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> authSignInEvent(
       AuthSignInEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoadingState());
-
     final resp = await _signIn(
       SignInParams(
         email: event.email,
@@ -67,7 +65,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     resp.fold(
       (l) {
         emit(AuthFailedState(message: l.message));
-        emit(AuthLoadingState());
       },
       (r) => _emitAuthSuccess(r, emit),
     );
@@ -77,8 +74,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthCheckUserLoginStatusEvent event, Emitter<AuthState> emit) async {
     final res = await _currentUser.call(NoParams());
 
-    res.fold((l) => emit(AuthFailedState(message: l.message)),
-        (r) => _emitAuthSuccess(r, emit));
+    res.fold((l) {
+      emit(AuthFailedState(message: l.message));
+      emit(AuthInitial());
+    }, (r) => _emitAuthSuccess(r, emit));
   }
 
   // this updates the user information using the cubit

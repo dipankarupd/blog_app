@@ -20,3 +20,5 @@ class UploadBlogEvent extends BlogEvent {
 }
 
 class FetchBlogsEvent extends BlogEvent {}
+
+class UserSignoutButtonPressedEvent extends BlogEvent {}

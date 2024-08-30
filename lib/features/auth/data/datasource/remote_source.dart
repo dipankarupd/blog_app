@@ -16,4 +16,6 @@ abstract interface class AuthRemoteSource {
   });
 
   Future<ProfileModel?> getCurrentUser();
+
+  Future<void> signout();
 }

@@ -29,9 +29,9 @@ class _BlogPageState extends State<BlogPage> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, AppRoute.uploadBlog);
+              context.read<BlogBloc>().add(UserSignoutButtonPressedEvent());
             },
-            icon: const Icon(CupertinoIcons.add_circled),
+            icon: const Icon(Icons.logout),
           )
         ],
       ),
@@ -39,6 +39,16 @@ class _BlogPageState extends State<BlogPage> {
         listener: (context, state) {
           if (state is BlogLoadingFailureState) {
             return showSnackbar(context, state.message);
+          }
+          if (state is BlogSignoutFailureState) {
+            return showSnackbar(context, state.message);
+          } else if (state is BlogSignoutSuccessState) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoute.signin,
+              (Route<dynamic> route) => false,
+            );
+            return showSnackbar(context, 'Successfully signed out');
           }
         },
         builder: (context, state) {
@@ -59,6 +69,12 @@ class _BlogPageState extends State<BlogPage> {
           }
           return const SizedBox();
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoute.uploadBlog);
+        },
+        child: Icon(Icons.add),
       ),
     );
   }

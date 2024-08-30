@@ -10,7 +10,7 @@ final class AuthInitial extends AuthState {}
 // build a circular indicator for loading
 class AuthLoadingState extends AuthState {}
 
-class AuthSuccessState extends AuthState {
+class AuthSuccessState extends AuthActionState {
   final Profile profile;
 
   AuthSuccessState({required this.profile});
