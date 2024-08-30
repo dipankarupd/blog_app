@@ -1,4 +1,5 @@
 import 'package:car_rental/cores/cubits/app_user/app_user_cubit.dart';
+import 'package:car_rental/cores/network/connection_checker_impl.dart';
 import 'package:car_rental/cores/secrets/supabase_secrets.dart';
 import 'package:car_rental/features/auth/data/datasource/remote_source.dart';
 import 'package:car_rental/features/auth/data/datasource/remote_source_impl.dart';
@@ -25,13 +26,18 @@ Future<void> initDependancies() async {
     url: AppSecrets.supabase_url,
     anonKey: AppSecrets.supabase_apon,
   );
+  _initAuth();
+  _initBlog();
 
   // Register Supabase client first
   serviceLoactor.registerLazySingleton(() => supabase.client);
 
-  // Initialize other dependencies
-  _initAuth();
-  _initBlog();
+  serviceLoactor.registerLazySingleton(() => AppUserCubit());
+  serviceLoactor.registerFactory(
+    () => ConnectionCheckerImpl(
+      internetConnection: serviceLoactor(),
+    ),
+  );
 }
 
 void _initAuth() {
@@ -45,6 +51,7 @@ void _initAuth() {
     )
     ..registerFactory<AuthRepository>(
       () => AuthRepoImpl(
+        serviceLoactor(),
         source: serviceLoactor(),
       ),
     )
@@ -58,9 +65,6 @@ void _initAuth() {
     )
     ..registerFactory<CurrentUser>(
       () => CurrentUser(authRepository: serviceLoactor()),
-    )
-    ..registerLazySingleton(
-      () => AppUserCubit(),
     )
     ..registerLazySingleton(
       () => AuthBloc(

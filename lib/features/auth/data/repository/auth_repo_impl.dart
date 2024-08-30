@@ -1,20 +1,26 @@
 import 'package:car_rental/cores/exceptions/custom_exception.dart';
+import 'package:car_rental/cores/network/connection_checker.dart';
 import 'package:car_rental/cores/utils/error.dart';
 import 'package:car_rental/features/auth/data/datasource/remote_source.dart';
 import 'package:car_rental/cores/entity/user_profile.dart';
+import 'package:car_rental/features/auth/data/model/user_profile_model.dart';
 import 'package:car_rental/features/auth/domain/repository/auth_repository.dart';
 import 'package:fpdart/src/either.dart';
 
 class AuthRepoImpl implements AuthRepository {
   final AuthRemoteSource source;
+  final ConnectionChecker connectionChecker;
 
-  AuthRepoImpl({required this.source});
+  AuthRepoImpl(this.connectionChecker, {required this.source});
   @override
   Future<Either<Failure, Profile>> signinWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
     try {
+      if (!await (connectionChecker.isConnected)) {
+        return left(Failure(message: 'No Interne'));
+      }
       final userProfile = await source.signinWithEmailAndPassword(
         email: email,
         password: password,
@@ -29,6 +35,20 @@ class AuthRepoImpl implements AuthRepository {
   @override
   Future<Either<Failure, Profile>> currentUser() async {
     try {
+      if (!await (connectionChecker.isConnected)) {
+        final session = source.currentUserSession;
+        if (session == null) {
+          return left(Failure(message: 'User not logged in'));
+        }
+
+        return right(
+          ProfileModel(
+            id: session.user.id,
+            email: session.user.email ?? '',
+            username: '',
+          ),
+        );
+      }
       final user = await source.getCurrentUser();
 
       // if we get a null user, show a failure with message
@@ -54,6 +74,10 @@ class AuthRepoImpl implements AuthRepository {
     required String password,
   }) async {
     try {
+      if (!await (connectionChecker.isConnected)) {
+        return left(Failure(message: 'No Interne'));
+      }
+
       final userProfile = await source.signupWithEmailAndPassword(
         username: username,
         email: email,
