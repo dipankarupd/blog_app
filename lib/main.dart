@@ -63,11 +63,10 @@ class _MyAppState extends State<MyApp> {
           return state is AppUserLoggedInState;
         },
         builder: (context, isLoggedIn) {
-          print(isLoggedIn);
           if (isLoggedIn) {
             return const BlogPage();
           }
-          print('here');
+
           return const SignInPage();
         },
       ),

@@ -69,7 +69,7 @@ class _SignInPageState extends State<SignInPage> {
                       const SizedBox(
                         height: 30,
                       ),
-                      Text(
+                      const Text(
                         'Sign In to continue',
                         style: TextStyle(
                             fontSize: 32, fontWeight: FontWeight.w600),

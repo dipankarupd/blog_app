@@ -18,6 +18,7 @@ import 'package:car_rental/features/blogs/domain/repository/blog_repository.dart
 import 'package:car_rental/features/blogs/domain/usecases/get_all_blogs.dart';
 import 'package:car_rental/features/blogs/domain/usecases/upload_blog_usecase.dart';
 import 'package:car_rental/features/blogs/presentation/bloc/blog_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,9 +26,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final serviceLoactor = GetIt.instance;
 
 Future<void> initDependancies() async {
+  await dotenv.load(fileName: '.env');
+
   final supabase = await Supabase.initialize(
-    url: AppSecrets.supabase_url,
-    anonKey: AppSecrets.supabase_apon,
+    url: AppSecrets.supabaseUrl,
+    anonKey: AppSecrets.supabaseApon,
   );
   _initAuth();
   _initBlog();
